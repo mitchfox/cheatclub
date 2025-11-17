@@ -21,6 +21,21 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
     );
   };
 
+  // Helper function to get the best deal discount for a restaurant
+  const getBestDealDiscount = (restaurant) => {
+    if (!restaurant.deals || restaurant.deals.length === 0) return 0;
+    return Math.max(...restaurant.deals.map(deal => parseInt(deal.discount) || 0));
+  };
+
+  // Sort restaurants by best deal (highest discount first)
+  const sortByBestDeal = (restaurantsList) => {
+    return [...restaurantsList].sort((a, b) => {
+      const discountA = getBestDealDiscount(a);
+      const discountB = getBestDealDiscount(b);
+      return discountB - discountA; // Sort descending (highest first)
+    });
+  };
+
   const applyFilters = useCallback(() => {
     const filtered = restaurants.filter(restaurant => {
       // Cuisine filter
@@ -50,7 +65,8 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
       return true;
     });
 
-    onFilterChange(filtered);
+    const sortedFiltered = sortByBestDeal(filtered);
+    onFilterChange(sortedFiltered);
   }, [restaurants, selectedCuisines, selectedDineIn, selectedLightning, minDiscount, onFilterChange]);
 
   const clearFilters = () => {

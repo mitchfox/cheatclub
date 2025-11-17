@@ -10,6 +10,21 @@ const RestaurantList = ({ onRestaurantsLoaded, filteredRestaurants, setFilteredR
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Helper function to get the best deal discount for a restaurant
+  const getBestDealDiscount = (restaurant) => {
+    if (!restaurant.deals || restaurant.deals.length === 0) return 0;
+    return Math.max(...restaurant.deals.map(deal => parseInt(deal.discount) || 0));
+  };
+
+  // Sort restaurants by best deal (highest discount first)
+  const sortByBestDeal = (restaurantsList) => {
+    return [...restaurantsList].sort((a, b) => {
+      const discountA = getBestDealDiscount(a);
+      const discountB = getBestDealDiscount(b);
+      return discountB - discountA; // Sort descending (highest first)
+    });
+  };
+
   useEffect(() => {
     let isMounted = true;
     
@@ -17,12 +32,13 @@ const RestaurantList = ({ onRestaurantsLoaded, filteredRestaurants, setFilteredR
       .then((data) => {
         if (!isMounted) return;
         
-        setRestaurants(data);
+        const sortedData = sortByBestDeal(data);
+        setRestaurants(sortedData);
         if (onRestaurantsLoaded) {
-          onRestaurantsLoaded(data);
+          onRestaurantsLoaded(sortedData);
         }
         if (setFilteredRestaurants) {
-          setFilteredRestaurants(data);
+          setFilteredRestaurants(sortedData);
         }
         setLoading(false);
       })
@@ -43,7 +59,7 @@ const RestaurantList = ({ onRestaurantsLoaded, filteredRestaurants, setFilteredR
   const handleSearch = (searchTerm) => {
     if (!searchTerm.trim()) {
       if (setFilteredRestaurants) {
-        setFilteredRestaurants(restaurants);
+        setFilteredRestaurants(sortByBestDeal(restaurants));
       }
       return;
     }
@@ -60,20 +76,52 @@ const RestaurantList = ({ onRestaurantsLoaded, filteredRestaurants, setFilteredR
     });
 
     if (setFilteredRestaurants) {
-      setFilteredRestaurants(filtered);
+      setFilteredRestaurants(sortByBestDeal(filtered));
     }
   };
 
   const displayRestaurants = filteredRestaurants || restaurants;
 
+  // Skeleton Loader Component
+  const SkeletonCard = ({ index }) => (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: index * 0.05 }}
+      className="bg-white rounded-xl shadow-md overflow-hidden"
+    >
+      {/* Image skeleton */}
+      <div className="relative h-48 bg-gray-200 animate-pulse" style={{ backgroundColor: '#FFE9CD' }}>
+        <div className="absolute top-3 right-3 flex items-center gap-2">
+          <div className="h-8 w-16 bg-gray-300 rounded-full animate-pulse" />
+          <div className="h-8 w-8 bg-gray-300 rounded-full animate-pulse" />
+        </div>
+      </div>
+      {/* Content skeleton */}
+      <div className="p-4">
+        <div className="h-6 bg-gray-200 rounded mb-2 animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded mb-2 w-3/4 animate-pulse" />
+        <div className="h-4 bg-gray-200 rounded mb-3 w-2/3 animate-pulse" />
+        <div className="flex flex-wrap gap-2">
+          <div className="h-6 w-20 bg-gray-200 rounded-full animate-pulse" />
+          <div className="h-6 w-24 bg-gray-200 rounded-full animate-pulse" />
+          <div className="h-6 w-16 bg-gray-200 rounded-full animate-pulse" />
+        </div>
+      </div>
+    </motion.div>
+  );
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-          className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full"
-        />
+      <div className="min-h-screen bg-gray-50">
+        <Search onSearch={handleSearch} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, index) => (
+              <SkeletonCard key={index} index={index} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -96,8 +144,14 @@ const RestaurantList = ({ onRestaurantsLoaded, filteredRestaurants, setFilteredR
               setLoading(true);
               fetchRestaurants()
                 .then((data) => {
-                  setRestaurants(data);
-                  setFilteredRestaurants(data);
+                  const sortedData = sortByBestDeal(data);
+                  setRestaurants(sortedData);
+                  if (onRestaurantsLoaded) {
+                    onRestaurantsLoaded(sortedData);
+                  }
+                  if (setFilteredRestaurants) {
+                    setFilteredRestaurants(sortedData);
+                  }
                   setLoading(false);
                 })
                 .catch((err) => {
@@ -142,7 +196,7 @@ const RestaurantList = ({ onRestaurantsLoaded, filteredRestaurants, setFilteredR
                 />
               ))}
             </motion.div>
-            <EmailCapture />
+            {/* <EmailCapture /> */}
           </>
         )}
       </div>
