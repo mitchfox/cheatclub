@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ClockIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { HiClock, HiMapPin } from 'react-icons/hi2';
+import { PiBowlFood } from 'react-icons/pi';
 
 const RestaurantCard = ({ restaurant, index }) => {
   const navigate = useNavigate();
@@ -9,6 +10,8 @@ const RestaurantCard = ({ restaurant, index }) => {
   const [imageLoading, setImageLoading] = useState(true);
 
   const handleClick = () => {
+    // Scroll to top instantly before navigation
+    window.scrollTo(0, 0);
     navigate(`/restaurant/${restaurant.objectId}`);
   };
 
@@ -23,19 +26,15 @@ const RestaurantCard = ({ restaurant, index }) => {
     setImageLoading(false);
   };
 
-  const handleImageError = (e) => {
+  const handleImageError = () => {
     if (!imageError) {
       setImageError(true);
       setImageLoading(false);
-      // Only set placeholder once, prevent infinite loop
-      const placeholder = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'%3E%3Crect fill=\'%23f3f4f6\' width=\'400\' height=\'300\'/%3E%3Ctext fill=\'%239ca3af\' font-family=\'sans-serif\' font-size=\'18\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3ERestaurant%3C/text%3E%3C/svg%3E';
-      // Try to set placeholder, but prevent infinite loop
-      if (e.target.src !== placeholder) {
-        e.target.src = placeholder;
-        e.target.onerror = null;
-      }
     }
   };
+
+  const hasImage = restaurant.imageLink && restaurant.imageLink.trim() !== '';
+  const showPlaceholder = !hasImage || imageError;
 
   const bestDeal = getBestDeal();
 
@@ -48,20 +47,28 @@ const RestaurantCard = ({ restaurant, index }) => {
       onClick={handleClick}
       className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer hover:shadow transition-shadow"
     >
-      <div className="relative h-48 overflow-hidden bg-gray-100">
-        {imageLoading && !imageError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-            <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      <div className="relative h-48 overflow-hidden" style={{ backgroundColor: '#FFE9CD' }}>
+        {showPlaceholder ? (
+          <div className="w-full h-full flex items-center justify-center p-8">
+            <PiBowlFood className="w-20 h-20 text-orange-500" />
           </div>
+        ) : (
+          <>
+            {imageLoading && (
+              <div className="absolute inset-0 flex items-center justify-center" style={{ backgroundColor: '#FFE9CD' }}>
+                <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+            <img
+              src={restaurant.imageLink}
+              alt={restaurant.name}
+              className={`w-full h-full object-cover ${imageLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+              loading="lazy"
+            />
+          </>
         )}
-        <img
-          src={restaurant.imageLink}
-          alt={restaurant.name}
-          className={`w-full h-full object-cover ${imageLoading && !imageError ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-          onLoad={handleImageLoad}
-          onError={handleImageError}
-          loading="lazy"
-        />
         {bestDeal && (
           <motion.div
             initial={{ scale: 0 }}
@@ -75,11 +82,11 @@ const RestaurantCard = ({ restaurant, index }) => {
       <div className="p-4">
         <h3 className="text-xl font-bold text-gray-800 mb-2">{restaurant.name}</h3>
         <div className="flex items-center text-gray-600 text-sm mb-2">
-          <MapPinIcon className="h-4 w-4 mr-1" />
+          <HiMapPin className="h-4 w-4 mr-1" />
           <span>{restaurant.address1}, {restaurant.suburb}</span>
         </div>
         <div className="flex items-center text-gray-600 text-sm mb-3">
-          <ClockIcon className="h-4 w-4 mr-1" />
+          <HiClock className="h-4 w-4 mr-1" />
           <span>{restaurant.open} - {restaurant.close}</span>
         </div>
         <div className="flex flex-wrap gap-2">

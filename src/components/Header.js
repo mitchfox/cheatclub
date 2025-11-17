@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { UserCircleIcon } from '@heroicons/react/24/outline';
+import { HiUserCircle, HiArrowLeft } from 'react-icons/hi2';
 import MobileMenu from './MobileMenu';
+import AuthModal from './AuthModal';
 import FilterMenu from './FilterMenu';
 
 const Header = ({ onFilterChange, restaurants = [] }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const isHomePage = location.pathname === '/';
+  const isRestaurantDetail = location.pathname.startsWith('/restaurant/');
 
   return (
     <>
@@ -21,10 +24,22 @@ const Header = ({ onFilterChange, restaurants = [] }) => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Filters on the left - Desktop and Mobile */}
+            {/* Filters on the left - Desktop and Mobile, or Back button on detail page */}
             <div className="flex-1 relative">
-              {isHomePage && restaurants.length > 0 && (
-                <FilterMenu restaurants={restaurants} onFilterChange={onFilterChange} />
+              {isRestaurantDetail ? (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/')}
+                  className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  aria-label="Back to restaurants"
+                >
+                  <HiArrowLeft className="h-6 w-6 text-gray-600" />
+                </motion.button>
+              ) : (
+                isHomePage && restaurants.length > 0 && (
+                  <FilterMenu restaurants={restaurants} onFilterChange={onFilterChange} />
+                )
               )}
             </div>
             {/* Logo in the middle */}
@@ -43,28 +58,30 @@ const Header = ({ onFilterChange, restaurants = [] }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
-                  // On mobile (md breakpoint), open menu
+                  // On mobile, open slide-up menu
                   setIsMobileMenuOpen(true);
                 }}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors md:hidden"
                 aria-label="Profile"
               >
-                <UserCircleIcon className="h-8 w-8 text-gray-600" />
+                <HiUserCircle className="h-8 w-8 text-gray-600" />
               </motion.button>
-              {/* Desktop profile button - no menu */}
+              {/* Desktop profile button - opens modal */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => setIsAuthModalOpen(true)}
                 className="hidden md:block p-2 rounded-full hover:bg-gray-100 transition-colors"
                 aria-label="Profile"
               >
-                <UserCircleIcon className="h-8 w-8 text-gray-600" />
+                <HiUserCircle className="h-8 w-8 text-gray-600" />
               </motion.button>
             </div>
           </div>
         </div>
       </motion.header>
       <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </>
   );
 };

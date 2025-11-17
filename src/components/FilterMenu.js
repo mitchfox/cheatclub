@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { HiFunnel, HiXMark } from 'react-icons/hi2';
 
 const FilterMenu = ({ restaurants, onFilterChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,74 +56,77 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
     applyFilters();
   }, [applyFilters]);
 
+  const hasActiveFilters = selectedCuisines.length > 0 || selectedDineIn !== null || selectedLightning !== null;
+  const filterIconColor = hasActiveFilters ? 'text-orange-600' : 'text-gray-600';
+
   const FilterPanelContent = () => (
     <>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-gray-800">Filters</h3>
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-bold text-gray-800">Filters</h3>
         <button
           onClick={() => setIsOpen(false)}
-          className="p-1 hover:bg-gray-100 rounded-full"
+          className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
         >
-          <XMarkIcon className="h-5 w-5 text-gray-600" />
+          <HiXMark className="h-5 w-5 text-gray-600" />
         </button>
       </div>
 
       {/* Cuisine Filter */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Cuisines</label>
-        <div className="max-h-40 overflow-y-auto space-y-2">
+      <div className="mb-6">
+        <label className="block text-sm font-semibold text-gray-800 mb-3">Cuisines</label>
+        <div className="max-h-48 overflow-y-auto space-y-2.5">
           {allCuisines.map(cuisine => (
-            <label key={cuisine} className="flex items-center gap-2 cursor-pointer">
+            <label key={cuisine} className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
               <input
                 type="checkbox"
                 checked={selectedCuisines.includes(cuisine)}
                 onChange={() => handleCuisineToggle(cuisine)}
-                className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+                className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:ring-offset-0 cursor-pointer"
               />
-              <span className="text-sm text-gray-700">{cuisine}</span>
+              <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">{cuisine}</span>
             </label>
           ))}
         </div>
       </div>
 
       {/* Dine-in Filter */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Dine-in</label>
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 cursor-pointer">
+      <div className="mb-6">
+        <label className="block text-sm font-semibold text-gray-800 mb-3">Dine-in</label>
+        <div className="space-y-2.5">
+          <label className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
             <input
               type="radio"
               name="dineIn"
               checked={selectedDineIn === true}
               onChange={() => setSelectedDineIn(selectedDineIn === true ? null : true)}
-              className="w-4 h-4 text-orange-500 border-gray-300 focus:ring-orange-500"
+              className="w-4 h-4 text-orange-500 border-gray-300 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0 cursor-pointer"
             />
-            <span className="text-sm text-gray-700">Dine-in Available</span>
+            <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Dine-in Available</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
             <input
               type="radio"
               name="dineIn"
               checked={selectedDineIn === false}
               onChange={() => setSelectedDineIn(selectedDineIn === false ? null : false)}
-              className="w-4 h-4 text-orange-500 border-gray-300 focus:ring-orange-500"
+              className="w-4 h-4 text-orange-500 border-gray-300 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0 cursor-pointer"
             />
-            <span className="text-sm text-gray-700">Takeout Only</span>
+            <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Takeout Only</span>
           </label>
         </div>
       </div>
 
       {/* Lightning Deal Filter */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Lightning Deals</label>
-        <label className="flex items-center gap-2 cursor-pointer">
+      <div className="mb-6">
+        <label className="block text-sm font-semibold text-gray-800 mb-3">Lightning Deals</label>
+        <label className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
           <input
             type="checkbox"
             checked={selectedLightning === true}
             onChange={() => setSelectedLightning(selectedLightning === true ? null : true)}
-            className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+            className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:ring-offset-0 cursor-pointer"
           />
-          <span className="text-sm text-gray-700">Show Lightning Deals Only</span>
+          <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Show Lightning Deals Only</span>
         </label>
       </div>
 
@@ -131,7 +134,7 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
       {(selectedCuisines.length > 0 || selectedDineIn !== null || selectedLightning !== null) && (
         <button
           onClick={clearFilters}
-          className="w-full mt-4 px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          className="w-full mt-4 px-4 py-2.5 text-sm font-semibold text-orange-600 hover:text-orange-700 border-2 border-orange-200 rounded-lg hover:bg-orange-50 hover:border-orange-300 transition-colors"
         >
           Clear All Filters
         </button>
@@ -146,12 +149,12 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="hidden md:flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
       >
-        <FunnelIcon className="h-5 w-5 text-gray-600" />
-        <span className="text-sm font-medium text-gray-700">Filters</span>
-        {(selectedCuisines.length > 0 || selectedDineIn !== null || selectedLightning !== null) && (
-          <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">
+        <HiFunnel className={`h-5 w-5 ${filterIconColor}`} />
+        <span className="text-sm font-semibold text-gray-800">Filters</span>
+        {hasActiveFilters && (
+          <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
             {selectedCuisines.length + (selectedDineIn !== null ? 1 : 0) + (selectedLightning !== null ? 1 : 0)}
           </span>
         )}
@@ -165,9 +168,9 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
         className="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors relative"
         aria-label="Filters"
       >
-        <FunnelIcon className="h-6 w-6 text-gray-600" />
-        {(selectedCuisines.length > 0 || selectedDineIn !== null || selectedLightning !== null) && (
-          <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+        <HiFunnel className={`h-6 w-6 ${filterIconColor}`} />
+        {hasActiveFilters && (
+          <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
             {selectedCuisines.length + (selectedDineIn !== null ? 1 : 0) + (selectedLightning !== null ? 1 : 0)}
           </span>
         )}
@@ -178,7 +181,7 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="hidden md:block absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-50"
+          className="hidden md:block absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-gray-200 p-5 z-50"
         >
           <FilterPanelContent />
         </motion.div>
@@ -200,9 +203,9 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'tween', duration: 0.3 }}
-              className="md:hidden fixed top-0 left-0 h-full w-80 bg-white shadow-xl z-50 overflow-y-auto"
+              className="md:hidden fixed top-0 left-0 h-full w-80 bg-white shadow-xl border-r border-gray-200 z-50 overflow-y-auto"
             >
-              <div className="p-4">
+              <div className="p-5">
                 <FilterPanelContent />
               </div>
             </motion.div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { HiMagnifyingGlass } from 'react-icons/hi2';
 
 const Search = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,10 +20,9 @@ const Search = ({ onSearch }) => {
     >
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
-          <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+          <HiMagnifyingGlass className="h-5 w-5 text-gray-400" />
         </div>
-        <motion.input
-          whileFocus={{ scale: 1.02 }}
+        <input
           type="text"
           value={searchTerm}
           onChange={handleSearch}
