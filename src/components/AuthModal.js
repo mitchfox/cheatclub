@@ -15,7 +15,7 @@ const AuthModal = ({ isOpen, onClose }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black bg-opacity-50 z-60"
+            className="fixed inset-0 bg-black bg-opacity-50 z-50"
           />
           {/* Centered Modal */}
           <motion.div

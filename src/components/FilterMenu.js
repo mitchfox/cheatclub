@@ -8,6 +8,7 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
   const [selectedCuisines, setSelectedCuisines] = useState([]);
   const [selectedDineIn, setSelectedDineIn] = useState(null);
   const [selectedLightning, setSelectedLightning] = useState(null);
+  const [minDiscount, setMinDiscount] = useState(0);
 
   // Get all unique cuisines
   const allCuisines = [...new Set(restaurants.flatMap(r => r.cuisines))].sort();
@@ -40,16 +41,23 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
         if (!hasLightningDeal) return false;
       }
 
+      // Discount filter
+      if (minDiscount > 0) {
+        const hasMinDiscount = restaurant.deals?.some(d => parseInt(d.discount) >= minDiscount);
+        if (!hasMinDiscount) return false;
+      }
+
       return true;
     });
 
     onFilterChange(filtered);
-  }, [restaurants, selectedCuisines, selectedDineIn, selectedLightning, onFilterChange]);
+  }, [restaurants, selectedCuisines, selectedDineIn, selectedLightning, minDiscount, onFilterChange]);
 
   const clearFilters = () => {
     setSelectedCuisines([]);
     setSelectedDineIn(null);
     setSelectedLightning(null);
+    setMinDiscount(0);
     // The useEffect will handle calling onFilterChange when state updates
   };
 
@@ -57,7 +65,7 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
     applyFilters();
   }, [applyFilters]);
 
-  const hasActiveFilters = selectedCuisines.length > 0 || selectedDineIn !== null || selectedLightning !== null;
+  const hasActiveFilters = selectedCuisines.length > 0 || selectedDineIn !== null || selectedLightning !== null || minDiscount > 0;
   const filterIconColor = hasActiveFilters ? 'text-orange-600' : 'text-gray-600';
 
   const FilterPanelContent = () => (
@@ -134,8 +142,33 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
         </label>
       </div>
 
+      {/* Discount Filter */}
+      <div className="mb-6">
+        <label className="block text-sm font-semibold text-gray-800 mb-3">
+          Minimum Discount: {minDiscount}%
+        </label>
+        <div className="px-2">
+          <input
+            type="range"
+            min="0"
+            max="50"
+            step="5"
+            value={minDiscount}
+            onChange={(e) => setMinDiscount(parseInt(e.target.value))}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+            style={{
+              background: `linear-gradient(to right, #f97316 0%, #f97316 ${(minDiscount / 50) * 100}%, #e5e7eb ${(minDiscount / 50) * 100}%, #e5e7eb 100%)`
+            }}
+          />
+          <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <span>0%</span>
+            <span>50%</span>
+          </div>
+        </div>
+      </div>
+
       {/* Clear Filters */}
-      {(selectedCuisines.length > 0 || selectedDineIn !== null || selectedLightning !== null) && (
+      {(selectedCuisines.length > 0 || selectedDineIn !== null || selectedLightning !== null || minDiscount > 0) && (
         <button
           onClick={clearFilters}
           className="w-full mt-4 px-4 py-2.5 text-sm font-semibold text-orange-600 hover:text-orange-700 border-2 border-orange-200 rounded-lg hover:bg-orange-50 hover:border-orange-300 transition-colors"
@@ -159,7 +192,7 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
         <span className="text-sm font-semibold text-gray-800">Filters</span>
         {hasActiveFilters && (
           <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
-            {selectedCuisines.length + (selectedDineIn !== null ? 1 : 0) + (selectedLightning !== null ? 1 : 0)}
+            {selectedCuisines.length + (selectedDineIn !== null ? 1 : 0) + (selectedLightning !== null ? 1 : 0) + (minDiscount > 0 ? 1 : 0)}
           </span>
         )}
       </motion.button>
@@ -175,7 +208,7 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
         <HiFunnel className={`h-6 w-6 ${filterIconColor}`} />
         {hasActiveFilters && (
           <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
-            {selectedCuisines.length + (selectedDineIn !== null ? 1 : 0) + (selectedLightning !== null ? 1 : 0)}
+            {selectedCuisines.length + (selectedDineIn !== null ? 1 : 0) + (selectedLightning !== null ? 1 : 0) + (minDiscount > 0 ? 1 : 0)}
           </span>
         )}
       </motion.button>
