@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import RestaurantCard from './RestaurantCard';
 import Search from './Search';
+import EmailCapture from './EmailCapture';
 import { fetchRestaurants } from '../utils/api';
 
 const RestaurantList = ({ onRestaurantsLoaded, filteredRestaurants, setFilteredRestaurants }) => {
@@ -127,19 +128,22 @@ const RestaurantList = ({ onRestaurantsLoaded, filteredRestaurants, setFilteredR
             <p className="text-gray-600 text-xl">No restaurants found</p>
           </motion.div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {displayRestaurants.map((restaurant, index) => (
-              <RestaurantCard
-                key={restaurant.objectId}
-                restaurant={restaurant}
-                index={index}
-              />
-            ))}
-          </motion.div>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {displayRestaurants.map((restaurant, index) => (
+                <RestaurantCard
+                  key={restaurant.objectId}
+                  restaurant={restaurant}
+                  index={index}
+                />
+              ))}
+            </motion.div>
+            <EmailCapture />
+          </>
         )}
       </div>
     </div>

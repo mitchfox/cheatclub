@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { HiUserCircle, HiArrowLeft } from 'react-icons/hi2';
+import { HiUserCircle } from 'react-icons/hi2';
+import { FaChevronLeft } from "react-icons/fa";
 import MobileMenu from './MobileMenu';
 import AuthModal from './AuthModal';
 import FilterMenu from './FilterMenu';
@@ -31,10 +32,10 @@ const Header = ({ onFilterChange, restaurants = [] }) => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/')}
-                  className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center gap-2"
                   aria-label="Back to restaurants"
                 >
-                  <HiArrowLeft className="h-6 w-6 text-gray-600" />
+                  <FaChevronLeft className="h-6 w-6 text-gray-600" />
                 </motion.button>
               ) : (
                 isHomePage && restaurants.length > 0 && (

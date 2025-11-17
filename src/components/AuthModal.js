@@ -15,7 +15,7 @@ const AuthModal = ({ isOpen, onClose }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black bg-opacity-50 z-50"
+            className="fixed inset-0 bg-black bg-opacity-50 z-60"
           />
           {/* Centered Modal */}
           <motion.div
@@ -30,7 +30,7 @@ const AuthModal = ({ isOpen, onClose }) => {
               <div className="p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800">Welcome</h2>
+                  <h2 className="text-2xl font-bold text-gray-800">Get Started</h2>
                   <button
                     onClick={onClose}
                     className="p-2 hover:bg-gray-100 rounded-full transition-colors"

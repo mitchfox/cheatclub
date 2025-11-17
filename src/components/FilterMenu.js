@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiFunnel, HiXMark } from 'react-icons/hi2';
+import { getCuisineEmoji } from '../utils/cuisineEmojis';
 
 const FilterMenu = ({ restaurants, onFilterChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,16 +75,19 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
       {/* Cuisine Filter */}
       <div className="mb-6">
         <label className="block text-sm font-semibold text-gray-800 mb-3">Cuisines</label>
-        <div className="max-h-48 overflow-y-auto space-y-2.5">
+        <div className="max-h-48 overflow-y-auto space-y-2.5 bg-gray-50 rounded-lg p-2 border border-gray-200">
           {allCuisines.map(cuisine => (
-            <label key={cuisine} className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+            <label key={cuisine} className="flex items-center gap-3 cursor-pointer group hover:bg-white p-2 rounded-lg transition-colors">
               <input
                 type="checkbox"
                 checked={selectedCuisines.includes(cuisine)}
                 onChange={() => handleCuisineToggle(cuisine)}
                 className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:ring-offset-0 cursor-pointer"
               />
-              <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">{cuisine}</span>
+              <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors flex items-center gap-1.5">
+                <span>{getCuisineEmoji(cuisine)}</span>
+                <span>{cuisine}</span>
+              </span>
             </label>
           ))}
         </div>
@@ -181,7 +185,7 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="hidden md:block absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-gray-200 p-5 z-50"
+          className="hidden md:block absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-gray-200 p-5 z-[60]"
         >
           <FilterPanelContent />
         </motion.div>
@@ -196,14 +200,14 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+              className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-[55]"
             />
             <motion.div
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'tween', duration: 0.3 }}
-              className="md:hidden fixed top-0 left-0 h-full w-80 bg-white shadow-xl border-r border-gray-200 z-50 overflow-y-auto"
+              className="md:hidden fixed top-0 left-0 h-full w-80 bg-white shadow-xl border-r border-gray-200 z-[60] overflow-y-auto"
             >
               <div className="p-5">
                 <FilterPanelContent />
