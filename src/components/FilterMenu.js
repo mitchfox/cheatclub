@@ -121,26 +121,32 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
       <div className="mb-6">
         <label className="block text-sm font-semibold text-gray-800 mb-3">Dine-in</label>
         <div className="space-y-2.5">
-          <label className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+          <div className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
             <input
               type="radio"
               name="dineIn"
+              id="dineIn-true"
               checked={selectedDineIn === true}
-              onChange={() => setSelectedDineIn(selectedDineIn === true ? null : true)}
-              className="w-4 h-4 text-orange-500 border-gray-300 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0 cursor-pointer"
+              onChange={() => setSelectedDineIn(true)}
+              className="w-5 h-5 text-orange-500 border-gray-300 cursor-pointer focus:outline-none"
             />
-            <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Dine-in Available</span>
-          </label>
-          <label className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+            <label htmlFor="dineIn-true" className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors cursor-pointer flex-1">
+              Dine-in Available
+            </label>
+          </div>
+          <div className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
             <input
               type="radio"
               name="dineIn"
+              id="dineIn-false"
               checked={selectedDineIn === false}
-              onChange={() => setSelectedDineIn(selectedDineIn === false ? null : false)}
-              className="w-4 h-4 text-orange-500 border-gray-300 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0 cursor-pointer"
+              onChange={() => setSelectedDineIn(false)}
+              className="w-5 h-5 text-orange-500 border-gray-300 cursor-pointer focus:outline-none"
             />
-            <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Takeout Only</span>
-          </label>
+            <label htmlFor="dineIn-false" className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors cursor-pointer flex-1">
+              Takeout Only
+            </label>
+          </div>
         </div>
       </div>
 
@@ -152,7 +158,7 @@ const FilterMenu = ({ restaurants, onFilterChange }) => {
             type="checkbox"
             checked={selectedLightning === true}
             onChange={() => setSelectedLightning(selectedLightning === true ? null : true)}
-            className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:ring-offset-0 cursor-pointer"
+            className="w-4 h-4 text-orange-500 border-gray-300  cursor-pointer"
           />
           <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Show Lightning Deals Only</span>
         </label>

@@ -28,15 +28,29 @@ const Header = ({ onFilterChange, restaurants = [] }) => {
             {/* Filters on the left - Desktop and Mobile, or Back button on detail page */}
             <div className="flex-1 relative">
               {isRestaurantDetail ? (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/')}
-                  className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center gap-2"
-                  aria-label="Back to restaurants"
-                >
-                  <FaChevronLeft className="h-6 w-6 text-gray-600" />
-                </motion.button>
+                <>
+                  {/* Desktop Back Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate('/')}
+                    className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                    aria-label="Back to restaurants"
+                  >
+                    <FaChevronLeft className="h-5 w-5 text-gray-600" />
+                    <span className="text-sm font-semibold text-gray-800">Back</span>
+                  </motion.button>
+                  {/* Mobile Back Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate('/')}
+                    className="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    aria-label="Back to restaurants"
+                  >
+                    <FaChevronLeft className="h-6 w-6 text-gray-600" />
+                  </motion.button>
+                </>
               ) : (
                 isHomePage && restaurants.length > 0 && (
                   <FilterMenu restaurants={restaurants} onFilterChange={onFilterChange} />
